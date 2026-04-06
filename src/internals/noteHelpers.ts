@@ -1,4 +1,4 @@
-import { Note } from "opensheetmusicdisplay/build/dist/src";
+import { Note } from "opensheetmusicdisplay";
 import { ArticulationStyle } from "../players/NotePlaybackOptions";
 
 export function getNoteArticulationStyle(note: Note): ArticulationStyle {
