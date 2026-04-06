@@ -15,7 +15,7 @@ export default class StepQueue {
   }
 
   createStep(tick: number): ScheduledNotes {
-    let step = this.steps.find(s => s.tick === tick);
+    let step = this.steps.find((s) => s.tick === tick);
     if (!step) {
       step = { tick, notes: [] };
       this.steps.push(step);
@@ -25,12 +25,12 @@ export default class StepQueue {
   }
 
   addNote(tick: number, note: Note): void {
-    const step = this.steps.find(s => s.tick === tick) ?? this.createStep(tick);
+    const step = this.steps.find((s) => s.tick === tick) ?? this.createStep(tick);
     step.notes.push(note);
   }
 
   delete(value: ScheduledNotes): void {
-    const index = this.steps.findIndex(v => v.tick === value.tick);
+    const index = this.steps.findIndex((v) => v.tick === value.tick);
     if (index != null) this.steps.splice(index, 1);
   }
 
@@ -40,6 +40,6 @@ export default class StepQueue {
   }
 
   getFirstEmptyTick(): number {
-    return this.sort().steps.filter(s => !s.notes.length)[0].tick;
+    return this.sort().steps.filter((s) => !s.notes.length)[0].tick;
   }
 }

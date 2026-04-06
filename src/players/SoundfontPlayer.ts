@@ -1,5 +1,9 @@
 import { InstrumentPlayer, PlaybackInstrument } from "./InstrumentPlayer";
-import { NotePlaybackStyle, NotePlaybackInstruction, ArticulationStyle } from "./NotePlaybackOptions";
+import {
+  NotePlaybackStyle,
+  NotePlaybackInstruction,
+  ArticulationStyle,
+} from "./NotePlaybackOptions";
 import { midiInstruments } from "../midi/midiInstruments";
 import { IAudioContext } from "standardized-audio-context";
 import supportedSoundfontInstruments from "./musyngkiteInstruments";
@@ -13,8 +17,8 @@ export class SoundfontPlayer implements InstrumentPlayer {
 
   constructor() {
     this.instruments = midiInstruments
-      .filter(i => supportedSoundfontInstruments.includes(this.getSoundfontInstrumentName(i[1])))
-      .map(i => ({
+      .filter((i) => supportedSoundfontInstruments.includes(this.getSoundfontInstrumentName(i[1])))
+      .map((i) => ({
         midiId: i[0],
         name: i[1],
         loaded: false,
@@ -26,7 +30,7 @@ export class SoundfontPlayer implements InstrumentPlayer {
   }
 
   async load(midiId: number) {
-    const instrument = this.instruments.find(i => i.midiId === midiId);
+    const instrument = this.instruments.find((i) => i.midiId === midiId);
     if (!instrument) {
       throw new Error("SoundfontPlayer does not support midi instrument ID " + midiId);
     }
@@ -35,7 +39,7 @@ export class SoundfontPlayer implements InstrumentPlayer {
     const player = await Soundfont.instrument(
       //@ts-ignore
       this.audioContext,
-      this.getSoundfontInstrumentName(instrument.name) as Soundfont.InstrumentName
+      this.getSoundfontInstrumentName(instrument.name) as Soundfont.InstrumentName,
     );
     this.players.set(midiId, player);
   }
@@ -63,7 +67,8 @@ export class SoundfontPlayer implements InstrumentPlayer {
   }
 
   private verifyPlayerLoaded(midiId: number) {
-    if (!this.players.has(midiId)) throw new Error("No soundfont player loaded for midi instrument " + midiId);
+    if (!this.players.has(midiId))
+      throw new Error("No soundfont player loaded for midi instrument " + midiId);
   }
 
   private getSoundfontInstrumentName(midiName: string): string {

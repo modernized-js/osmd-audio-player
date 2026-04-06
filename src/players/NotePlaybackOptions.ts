@@ -1,7 +1,7 @@
 export enum ArticulationStyle {
   None,
   Staccato,
-  Legato
+  Legato,
 }
 
 export interface NotePlaybackStyle {

@@ -27,7 +27,11 @@ export default class PlaybackScheduler {
 
   private noteSchedulingCallback: NoteSchedulingCallback;
 
-  constructor(wholeNoteLength: number, audioContext: IAudioContext, noteSchedulingCallback: NoteSchedulingCallback) {
+  constructor(
+    wholeNoteLength: number,
+    audioContext: IAudioContext,
+    noteSchedulingCallback: NoteSchedulingCallback,
+  ) {
     this.noteSchedulingCallback = noteSchedulingCallback;
     this.wholeNoteLength = wholeNoteLength;
     this.audioContext = audioContext;
@@ -47,7 +51,10 @@ export default class PlaybackScheduler {
   }
 
   private get calculatedTick() {
-    return this.currentTick + Math.round((this.audioContextTime - this.currentTickTimestamp) / this.tickDuration);
+    return (
+      this.currentTick +
+      Math.round((this.audioContextTime - this.currentTickTimestamp) / this.tickDuration)
+    );
   }
 
   start() {
@@ -56,7 +63,10 @@ export default class PlaybackScheduler {
     this.audioContextStartTime = this.audioContext.currentTime;
     this.currentTickTimestamp = this.audioContextTime;
     if (!this.schedulerIntervalHandle) {
-      this.schedulerIntervalHandle = window.setInterval(() => this.scheduleIterationStep(), this.scheduleInterval);
+      this.schedulerIntervalHandle = window.setInterval(
+        () => this.scheduleIterationStep(),
+        this.scheduleInterval,
+      );
     }
   }
 
@@ -90,9 +100,9 @@ export default class PlaybackScheduler {
       thisTick = this.stepQueue.getFirstEmptyTick();
     }
 
-    for (let entry of currentVoiceEntries) {
+    for (const entry of currentVoiceEntries) {
       if (!entry.IsGrace) {
-        for (let note of entry.Notes) {
+        for (const note of entry.Notes) {
           this.stepQueue.addNote(thisTick, note);
           this.stepQueue.createStep(thisTick + note.Length.RealValue * this.tickDenominator);
         }
@@ -107,7 +117,7 @@ export default class PlaybackScheduler {
 
     let nextTick = this.stepQueue.steps[this.stepQueueIndex]?.tick;
     while (this.nextTickAvailableAndWithinSchedulePeriod(nextTick)) {
-      let step = this.stepQueue.steps[this.stepQueueIndex];
+      const step = this.stepQueue.steps[this.stepQueueIndex];
 
       let timeToTick = (step.tick - this.currentTick) * this.tickDuration;
       if (timeToTick < 0) timeToTick = 0;
@@ -119,7 +129,7 @@ export default class PlaybackScheduler {
       nextTick = this.stepQueue.steps[this.stepQueueIndex]?.tick;
     }
 
-    for (let tick of this.scheduledTicks) {
+    for (const tick of this.scheduledTicks) {
       if (tick <= this.currentTick) {
         this.scheduledTicks.delete(tick);
       }

@@ -1,5 +1,12 @@
 import PlaybackScheduler from "./PlaybackScheduler";
-import { Cursor, OpenSheetMusicDisplay, MusicSheet, Note, Instrument, Voice } from "opensheetmusicdisplay";
+import {
+  Cursor,
+  OpenSheetMusicDisplay,
+  MusicSheet,
+  Note,
+  Instrument,
+  Voice,
+} from "opensheetmusicdisplay";
 import { SoundfontPlayer } from "./players/SoundfontPlayer";
 import { InstrumentPlayer, PlaybackInstrument } from "./players/InstrumentPlayer";
 import { NotePlaybackInstruction } from "./players/NotePlaybackOptions";
@@ -44,7 +51,10 @@ export default class PlaybackEngine {
   public scoreInstruments: Instrument[] = [];
   public ready: boolean = false;
 
-  constructor(context: IAudioContext = new AudioContext(), instrumentPlayer: InstrumentPlayer = new SoundfontPlayer()) {
+  constructor(
+    context: IAudioContext = new AudioContext(),
+    instrumentPlayer: InstrumentPlayer = new SoundfontPlayer(),
+  ) {
     this.ac = context;
     this.ac.suspend();
 
@@ -79,8 +89,10 @@ export default class PlaybackEngine {
 
   public getPlaybackInstrument(voiceId: number): PlaybackInstrument {
     if (!this.sheet) return null;
-    const voice = this.sheet.Instruments.flatMap(i => i.Voices).find(v => v.VoiceId === voiceId);
-    return this.availableInstruments.find(i => i.midiId === (voice as any).midiInstrumentId);
+    const voice = this.sheet.Instruments.flatMap((i) => i.Voices).find(
+      (v) => v.VoiceId === voiceId,
+    );
+    return this.availableInstruments.find((i) => i.midiId === (voice as any).midiInstrumentId);
   }
 
   public async setInstrument(voice: Voice, midiInstrumentId: number): Promise<void> {
@@ -101,7 +113,7 @@ export default class PlaybackEngine {
     this.initInstruments();
 
     this.scheduler = new PlaybackScheduler(this.wholeNoteLength, this.ac, (delay, notes) =>
-      this.notePlaybackCallback(delay, notes)
+      this.notePlaybackCallback(delay, notes),
     );
 
     this.countAndSetIterationSteps();
@@ -118,9 +130,11 @@ export default class PlaybackEngine {
   }
 
   private async loadInstruments() {
-    let playerPromises: Promise<void>[] = [];
+    const playerPromises: Promise<void>[] = [];
     for (const i of this.sheet.Instruments) {
-      const pbInstrument = this.availableInstruments.find(pbi => pbi.midiId === i.MidiInstrumentId);
+      const pbInstrument = this.availableInstruments.find(
+        (pbi) => pbi.midiId === i.MidiInstrumentId,
+      );
       if (pbInstrument == null) {
         this.fallbackToPiano(i);
       }
@@ -130,10 +144,12 @@ export default class PlaybackEngine {
   }
 
   private fallbackToPiano(i: Instrument) {
-    console.warn(`Can't find playback instrument for midiInstrumentId ${i.MidiInstrumentId}. Falling back to piano`);
+    console.warn(
+      `Can't find playback instrument for midiInstrumentId ${i.MidiInstrumentId}. Falling back to piano`,
+    );
     i.MidiInstrumentId = 0;
 
-    if (this.availableInstruments.find(i => i.midiId === 0) == null) {
+    if (this.availableInstruments.find((i) => i.midiId === 0) == null) {
       throw new Error("Piano fallback failed, grand piano not supported");
     }
   }
@@ -179,7 +195,8 @@ export default class PlaybackEngine {
       ++this.currentIterationStep;
     }
     let schedulerStep = this.currentIterationStep;
-    if (this.currentIterationStep > 0 && this.currentIterationStep < this.iterationSteps) ++schedulerStep;
+    if (this.currentIterationStep > 0 && this.currentIterationStep < this.iterationSteps)
+      ++schedulerStep;
     this.scheduler.setIterationStep(schedulerStep);
   }
 
@@ -208,9 +225,9 @@ export default class PlaybackEngine {
 
   private notePlaybackCallback(audioDelay, notes: Note[]) {
     if (this.state !== PlaybackState.PLAYING) return;
-    let scheduledNotes: Map<number, NotePlaybackInstruction[]> = new Map();
+    const scheduledNotes: Map<number, NotePlaybackInstruction[]> = new Map();
 
-    for (let note of notes) {
+    for (const note of notes) {
       if (note.isRest()) {
         continue;
       }
@@ -240,7 +257,7 @@ export default class PlaybackEngine {
 
     this.timeoutHandles.push(
       window.setTimeout(() => this.iterationCallback(), Math.max(0, audioDelay * 1000 - 35)), // Subtracting 35 milliseconds to compensate for update delay
-      window.setTimeout(() => this.events.emit(PlaybackEvent.ITERATION, notes), audioDelay * 1000)
+      window.setTimeout(() => this.events.emit(PlaybackEvent.ITERATION, notes), audioDelay * 1000),
     );
   }
 
@@ -259,7 +276,7 @@ export default class PlaybackEngine {
 
   // Used to avoid duplicate cursor movements after a rapid pause/resume action
   private clearTimeouts() {
-    for (let h of this.timeoutHandles) {
+    for (const h of this.timeoutHandles) {
       clearTimeout(h);
     }
     this.timeoutHandles = [];
