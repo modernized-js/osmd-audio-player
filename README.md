@@ -1,77 +1,79 @@
-ℹ️ This project is no longer in active development. I still keep an eye on it and it's open for contributions/PRs but I am not actively working on new feature implementations. The main reason being that there is an official early access audio player to be found (currently only available for donors): https://github.com/sponsors/opensheetmusicdisplay
+# @isamu/osmd-audio-player
 
-# 🎵 OSMD Audio player
+> **Fork of [osmd-audio-player](https://github.com/jimutt/osmd-audio-player)** by Jimmy Utterström.
+> Modernized build system, updated dependencies, and stricter TypeScript typing.
 
-Unoffical audio playback engine for [OpenSheetMusicDisplay](https://github.com/opensheetmusicdisplay/opensheetmusicdisplay). Successor meant to replace my previous proof of concept player & demo at https://github.com/jimutt/osmd-playback-demo.
+Unofficial audio playback engine for [OpenSheetMusicDisplay](https://github.com/opensheetmusicdisplay/opensheetmusicdisplay).
 
-This player is still in a very early state and lots of breaking and non-breaking changes will most likely be introduced before the first major release. Use at your own risk!
+## Changes from upstream
+
+- Migrated from npm/Babel/Jest to yarn/Vitest
+- Upgraded TypeScript 3.7 to 5.x
+- Upgraded opensheetmusicdisplay 0.8 to 1.9
+- Added ESLint + Prettier
+- Removed all `any` types
+- GitHub Actions CI (ubuntu/windows/macos)
 
 ## Install
 
 ```
-npm install osmd-audio-player
+yarn add @isamu/osmd-audio-player
 ```
 
-## Demos / usage
+## Usage
 
-### Basic
+```typescript
+import { OpenSheetMusicDisplay } from "opensheetmusicdisplay";
+import AudioPlayer from "@isamu/osmd-audio-player";
 
-Basic no-framework demo with only play, pause & stop functionality.
+const osmd = new OpenSheetMusicDisplay(document.getElementById("score"));
+const audioPlayer = new AudioPlayer();
 
-**Live demo:** https://osmd-audio-player-demo-basic.netlify.com/ <br/>
-**Source:** https://github.com/jimutt/osmd-audio-player/tree/master/demos/basic
+await osmd.load(scoreXml);
+await osmd.render();
+await audioPlayer.loadScore(osmd);
 
-### Vue JS + Vuetify
-
-A more full-featured demo featuring configurable instruments, level control, switching scores & changing tempo.
-
-**Live demo:** https://osmd-audio-player-demo-vue.netlify.com/ <br/>
-**Source:** https://github.com/jimutt/osmd-audio-player/tree/master/demos/vue-player-demo
-
-You might notice that there's currently a quite large delay when switching instruments. It's due to the in-advance scheduling to prevent interruptions & timing issues in the audio playback, and there's currently no clearing/reset of the buffer when an instrument change takes place. Some improvements in that area are planned.
-
-
-### Basic (React)
-
-Barebones React example, contribution by [@joshstovall](https://github.com/joshstovall). 
-
-**Source:** https://github.com/jimutt/osmd-audio-player/tree/master/demos/react-demo
-
-
-### Basic (UMD build)
-
-Same functionality as the basic demo but without any Node.js requirements. Uses the UMD build of OSMD and the audio player for simple plug and play functionality in any web page.
-
-**Source:** https://github.com/jimutt/osmd-audio-player/tree/master/demos/umd-web
-
-The minified UMD build can be referenced from JSDelivr: https://cdn.jsdelivr.net/npm/osmd-audio-player/umd/OsmdAudioPlayer.min.js
+audioPlayer.play();
+```
 
 ## Features
 
-- Framework agnostic, not tied to a specific front end Framework
-- Multi-instrument support
-- Individual level controls
-- Automatic tempo detection from score
-- Automatic instrument assignment
+- Framework agnostic (Vanilla JS / React / Vue)
+- Multi-instrument support (91 MIDI instruments via Musyngkite soundfont)
+- Individual volume controls per instrument
+- Automatic tempo detection from score / BPM control
+- Staccato articulation / tie handling
+- Seek (jump to step)
+- Event-driven architecture (STATE_CHANGE / ITERATION)
 
-## Roadmap
+## API
 
-- Repeat support
-- Dynamics support
-- Grace note support
-- Click to set playback position
-- Updated & properly structured Vue demo
-- Quickstart guide & more extensive Readme
-- Custom audio stack for playing soundfonts
-- Stricter typing
-- Unit tests
+```typescript
+const audioPlayer = new AudioPlayer();
 
-## Credits
+await audioPlayer.loadScore(osmd);   // Load score from OSMD instance
+await audioPlayer.play();            // Start playback
+audioPlayer.pause();                 // Pause playback
+await audioPlayer.stop();            // Stop and reset to beginning
+audioPlayer.jumpToStep(step);        // Seek to specific step
+audioPlayer.setBpm(120);             // Set tempo
 
-<div style="max-width: 340px;">
+audioPlayer.on("state-change", (state) => { /* INIT | PLAYING | STOPPED | PAUSED */ });
+audioPlayer.on("iteration", (notes) => { /* Called for each note group */ });
+```
 
-[![Browserstack](https://s3.eu-central-1.amazonaws.com/ju-media/Browserstack-logo%402x.png)](http://browserstack.com/)
+## Development
 
-</div>
+```bash
+yarn install
+yarn dev          # TypeScript watch mode
+yarn test         # Run tests (Vitest)
+yarn build        # Compile to dist/
+yarn build-umd    # UMD bundle
+yarn lint         # ESLint
+yarn format       # Prettier
+```
 
-Thank you Browserstack for offering me your Open Source license for cross browser testing.
+## License
+
+MIT - Original work by [Jimmy Utterström](https://github.com/jimutt/osmd-audio-player)
