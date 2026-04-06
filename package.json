@@ -1,7 +1,7 @@
 {
-  "name": "osmd-audio-player",
-  "version": "0.7.0",
-  "description": "OSMD audio player",
+  "name": "@isamu/osmd-audio-player",
+  "version": "1.0.0",
+  "description": "OSMD audio player (fork of osmd-audio-player with modernized build system)",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -26,7 +26,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jimutt/osmd-audio-player"
+    "url": "https://github.com/isamu/osmd-audio-player"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "keywords": [
     "MusicXML",
