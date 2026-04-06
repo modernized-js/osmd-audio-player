@@ -14,6 +14,10 @@ import { getNoteDuration, getNoteVolume, getNoteArticulationStyle } from "./inte
 import { EventEmitter } from "./internals/EventEmitter";
 import { AudioContext, IAudioContext } from "standardized-audio-context";
 
+interface VoiceWithMidi extends Voice {
+  midiInstrumentId: number;
+}
+
 export enum PlaybackState {
   INIT = "INIT",
   PLAYING = "PLAYING",
@@ -92,12 +96,12 @@ export default class PlaybackEngine {
     const voice = this.sheet.Instruments.flatMap((i) => i.Voices).find(
       (v) => v.VoiceId === voiceId,
     );
-    return this.availableInstruments.find((i) => i.midiId === (voice as any).midiInstrumentId);
+    return this.availableInstruments.find((i) => i.midiId === (voice as VoiceWithMidi).midiInstrumentId);
   }
 
   public async setInstrument(voice: Voice, midiInstrumentId: number): Promise<void> {
     await this.instrumentPlayer.load(midiInstrumentId);
-    (voice as any).midiInstrumentId = midiInstrumentId;
+    (voice as VoiceWithMidi).midiInstrumentId = midiInstrumentId;
   }
 
   async loadScore(osmd: OpenSheetMusicDisplay): Promise<void> {
@@ -124,7 +128,7 @@ export default class PlaybackEngine {
   private initInstruments() {
     for (const i of this.sheet.Instruments) {
       for (const v of i.Voices) {
-        (v as any).midiInstrumentId = i.MidiInstrumentId;
+        (v as VoiceWithMidi).midiInstrumentId = i.MidiInstrumentId;
       }
     }
   }
@@ -184,7 +188,7 @@ export default class PlaybackEngine {
     this.clearTimeouts();
   }
 
-  jumpToStep(step) {
+  jumpToStep(step: number) {
     this.pause();
     if (this.currentIterationStep > step) {
       this.cursor.reset();
@@ -205,7 +209,7 @@ export default class PlaybackEngine {
     if (this.scheduler) this.scheduler.wholeNoteLength = this.wholeNoteLength;
   }
 
-  public on(event: PlaybackEvent, cb: (...args: any[]) => void) {
+  public on(event: PlaybackEvent, cb: (...args: unknown[]) => void) {
     this.events.on(event, cb);
   }
 
@@ -223,7 +227,7 @@ export default class PlaybackEngine {
     this.cursor.reset();
   }
 
-  private notePlaybackCallback(audioDelay, notes: Note[]) {
+  private notePlaybackCallback(audioDelay: number, notes: Note[]) {
     if (this.state !== PlaybackState.PLAYING) return;
     const scheduledNotes: Map<number, NotePlaybackInstruction[]> = new Map();
 
@@ -236,7 +240,7 @@ export default class PlaybackEngine {
       const noteVolume = getNoteVolume(note);
       const noteArticulation = getNoteArticulationStyle(note);
 
-      const midiPlaybackInstrument = (note as any).ParentVoiceEntry.ParentVoice.midiInstrumentId;
+      const midiPlaybackInstrument = (note.ParentVoiceEntry.ParentVoice as VoiceWithMidi).midiInstrumentId;
       const fixedKey = note.ParentVoiceEntry.ParentVoice.Parent.SubInstruments[0].fixedKey || 0;
 
       if (!scheduledNotes.has(midiPlaybackInstrument)) {
@@ -269,7 +273,7 @@ export default class PlaybackEngine {
   private stopPlayers() {
     for (const i of this.sheet.Instruments) {
       for (const v of i.Voices) {
-        this.instrumentPlayer.stop((v as any).midiInstrumentId);
+        this.instrumentPlayer.stop((v as VoiceWithMidi).midiInstrumentId);
       }
     }
   }

@@ -1,14 +1,16 @@
-export class EventEmitter<T> {
-  private subscribers: Map<T, Function[]> = new Map();
+type Callback = (...args: unknown[]) => void;
 
-  public on(event: T, callback: (...args: any[]) => any) {
+export class EventEmitter<T> {
+  private subscribers: Map<T, Callback[]> = new Map();
+
+  public on(event: T, callback: Callback) {
     if (!this.subscribers.get(event)) {
       this.subscribers.set(event, []);
     }
-    this.subscribers.get(event).push(callback);
+    this.subscribers.get(event)!.push(callback);
   }
 
-  public emit(event: T, ...args: any[]) {
+  public emit(event: T, ...args: unknown[]) {
     const subscribers = this.subscribers.get(event) || [];
     for (const sub of subscribers) {
       sub(...args);

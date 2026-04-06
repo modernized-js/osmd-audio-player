@@ -1,8 +1,8 @@
 import StepQueue from "./internals/StepQueue";
-import { VoiceEntry } from "opensheetmusicdisplay";
+import { Note, VoiceEntry } from "opensheetmusicdisplay";
 import { IAudioContext } from "standardized-audio-context";
 
-type NoteSchedulingCallback = (delay: number, notes: any) => void;
+type NoteSchedulingCallback = (delay: number, notes: Note[]) => void;
 
 export default class PlaybackScheduler {
   public wholeNoteLength: number;
@@ -136,7 +136,7 @@ export default class PlaybackScheduler {
     }
   }
 
-  private nextTickAvailableAndWithinSchedulePeriod(nextTick: any) {
+  private nextTickAvailableAndWithinSchedulePeriod(nextTick: number | undefined) {
     return (
       nextTick &&
       this.currentTickTimestamp + (nextTick - this.currentTick) * this.tickDuration <=

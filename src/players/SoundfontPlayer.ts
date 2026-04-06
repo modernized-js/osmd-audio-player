@@ -37,8 +37,7 @@ export class SoundfontPlayer implements InstrumentPlayer {
     if (this.players.has(midiId)) return;
 
     const player = await Soundfont.instrument(
-      //@ts-ignore
-      this.audioContext,
+      this.audioContext as unknown as AudioContext,
       this.getSoundfontInstrumentName(instrument.name) as Soundfont.InstrumentName,
     );
     this.players.set(midiId, player);

@@ -9,11 +9,4 @@ export default tseslint.config(
   {
     ignores: ["dist/", "umd/", "demos/", "rollup.umd.config.js"],
   },
-  {
-    rules: {
-      "@typescript-eslint/no-explicit-any": "warn",
-      "@typescript-eslint/no-unsafe-function-type": "warn",
-      "@typescript-eslint/ban-ts-comment": "warn",
-    },
-  },
 );

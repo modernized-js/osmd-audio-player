@@ -1,7 +1,6 @@
 import { describe, test, expect, vi } from "vitest";
 import PlaybackEngine from ".";
-import { mock, instance, when } from "ts-mockito";
-import { OpenSheetMusicDisplay, Cursor, MusicSheet, Fraction } from "opensheetmusicdisplay";
+import { OpenSheetMusicDisplay } from "opensheetmusicdisplay";
 import { PlaybackEvent, PlaybackState } from "./PlaybackEngine";
 import { IAudioContext } from "standardized-audio-context";
 
@@ -81,18 +80,20 @@ function createMockedAudioContext(): IAudioContext {
 }
 
 function createOsmdMock(): OpenSheetMusicDisplay {
-  const mockedOsmd = mock(OpenSheetMusicDisplay);
-  const mockedSheet = mock(MusicSheet);
-  const mockedFraction = mock(Fraction);
-  const mockedCursor = mock(Cursor);
-  const playbackSettings = { rhythm: instance(mockedFraction) };
-
-  //@ts-ignore
-  when(mockedCursor.Iterator).thenReturn({ EndReached: true });
-  when(mockedOsmd.cursor).thenReturn(instance(mockedCursor));
-  when(mockedSheet.Instruments).thenReturn([]);
-  //@ts-ignore
-  when(mockedSheet.SheetPlaybackSetting).thenReturn(playbackSettings);
-  when(mockedOsmd.Sheet).thenReturn(instance(mockedSheet));
-  return instance(mockedOsmd);
+  return {
+    cursor: {
+      Iterator: { EndReached: true },
+      show: vi.fn(),
+      hide: vi.fn(),
+      next: vi.fn(),
+      reset: vi.fn(),
+      VoicesUnderCursor: vi.fn(() => []),
+    },
+    Sheet: {
+      Instruments: [],
+      SheetPlaybackSetting: { rhythm: {} },
+      HasBPMInfo: false,
+      DefaultStartTempoInBpm: 120,
+    },
+  } as unknown as OpenSheetMusicDisplay;
 }
