@@ -1,17 +1,18 @@
+import { describe, test, expect, vi } from "vitest";
 import PlaybackEngine from ".";
 import { mock, instance, when } from "ts-mockito";
 import { OpenSheetMusicDisplay, Cursor, MusicSheet, PlaybackSettings, Fraction } from "opensheetmusicdisplay";
 import { PlaybackEvent, PlaybackState } from "./PlaybackEngine";
 import { IAudioContext } from "standardized-audio-context";
 
-jest.mock("./PlaybackScheduler");
+vi.mock("./PlaybackScheduler");
 
 describe("PlaybackEngine", () => {
   describe("Events", () => {
     test("Playback state event on loadScore()", async () => {
       const acMock = createMockedAudioContext();
       const osmdMock = createOsmdMock();
-      const stateCb = jest.fn();
+      const stateCb = vi.fn();
 
       const pbEngine = new PlaybackEngine(acMock);
 
@@ -25,7 +26,7 @@ describe("PlaybackEngine", () => {
     test("Playback state event on play()", async () => {
       const acMock = createMockedAudioContext();
       const osmdMock = createOsmdMock();
-      const stateCb = jest.fn();
+      const stateCb = vi.fn();
 
       const pbEngine = new PlaybackEngine(acMock);
 
@@ -40,7 +41,7 @@ describe("PlaybackEngine", () => {
     test("Playback state event on stop()", async () => {
       const acMock = createMockedAudioContext();
       const osmdMock = createOsmdMock();
-      const stateCb = jest.fn();
+      const stateCb = vi.fn();
 
       const pbEngine = new PlaybackEngine(acMock);
 
@@ -56,7 +57,7 @@ describe("PlaybackEngine", () => {
     test("Playback state event on pause()", async () => {
       const acMock = createMockedAudioContext();
       const osmdMock = createOsmdMock();
-      const stateCb = jest.fn();
+      const stateCb = vi.fn();
 
       const pbEngine = new PlaybackEngine(acMock);
 
@@ -72,11 +73,11 @@ describe("PlaybackEngine", () => {
 });
 
 function createMockedAudioContext(): IAudioContext {
-  return ({
+  return {
     currentTime: 0,
-    suspend: jest.fn(async () => {}),
-    resume: jest.fn(async () => {}),
-  } as unknown) as IAudioContext;
+    suspend: vi.fn(async () => {}),
+    resume: vi.fn(async () => {}),
+  } as unknown as IAudioContext;
 }
 
 function createOsmdMock(): OpenSheetMusicDisplay {

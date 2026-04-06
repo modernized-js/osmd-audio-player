@@ -9,7 +9,7 @@ export default class PlaybackScheduler {
 
   private stepQueue = new StepQueue();
   private stepQueueIndex = 0;
-  private scheduledTicks = new Set();
+  private scheduledTicks = new Set<number>();
 
   private currentTick = 0;
   private currentTickTimestamp = 0;

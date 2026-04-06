@@ -1,9 +1,10 @@
+import { describe, test, expect, vi } from "vitest";
 import { EventEmitter } from "./EventEmitter";
 
 describe("EventEmitter", () => {
   test("Single subscriber", () => {
     const emitter = new EventEmitter();
-    const cb = jest.fn(() => {});
+    const cb = vi.fn(() => {});
 
     emitter.on("test-event", cb);
     emitter.emit("test-event");
@@ -13,7 +14,7 @@ describe("EventEmitter", () => {
 
   test("Single subscriber, with arguments", () => {
     const emitter = new EventEmitter();
-    const cb = jest.fn(() => {});
+    const cb = vi.fn(() => {});
 
     emitter.on("test-event", cb);
     emitter.emit("test-event", 1, 2);
@@ -24,8 +25,8 @@ describe("EventEmitter", () => {
 
   test("Multiple subscribers", () => {
     const emitter = new EventEmitter();
-    const cb1 = jest.fn(() => {});
-    const cb2 = jest.fn(() => {});
+    const cb1 = vi.fn(() => {});
+    const cb2 = vi.fn(() => {});
 
     emitter.on("test-event", cb1);
     emitter.on("test-event", cb2);
@@ -38,9 +39,9 @@ describe("EventEmitter", () => {
 
   test("Multiple events", () => {
     const emitter = new EventEmitter();
-    const cb1 = jest.fn(() => {});
-    const cb2 = jest.fn(() => {});
-    const cb3 = jest.fn(() => {});
+    const cb1 = vi.fn(() => {});
+    const cb2 = vi.fn(() => {});
+    const cb3 = vi.fn(() => {});
 
     emitter.on("event1", cb1);
     emitter.on("event2", cb2);

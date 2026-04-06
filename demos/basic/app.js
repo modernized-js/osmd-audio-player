@@ -8,7 +8,7 @@ import { PlaybackEvent } from "../../dist/PlaybackEngine";
   const audioPlayer = new AudioPlayer();
 
   const scoreXml = await axios.get(
-    "https://opensheetmusicdisplay.github.io/demo/sheets/MuzioClementi_SonatinaOpus36No3_Part1.xml"
+    "https://opensheetmusicdisplay.github.io/demo/MuzioClementi_SonatinaOpus36No3_Part1.xml"
   );
 
   await osmd.load(scoreXml.data);
