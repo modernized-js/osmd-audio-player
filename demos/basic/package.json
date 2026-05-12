@@ -1,25 +1,20 @@
 {
   "name": "osmd-audio-player-demo-basic",
   "version": "1.0.0",
-  "description": "",
-  "main": "app.js",
+  "private": true,
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "serve": "parcel index.html --port 1337",
-    "build": "parcel build index.html"
+    "serve": "vite --port 1337",
+    "build": "vite build"
   },
   "author": "Jimmy Utterström",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.21.2",
-    "opensheetmusicdisplay": "^0.8.4",
-    "osmd-audio-player": "../../"
+    "axios": "^1.7.7",
+    "opensheetmusicdisplay": "^1.9.7",
+    "@modernized-js/osmd-audio-player": "../../"
   },
   "devDependencies": {
-    "parcel-bundler": "^1.12.4"
-  },
-  "browserslist": [
-    "last 3 Chrome versions",
-    "last 3 Firefox versions"
-  ]
+    "vite": "^8.0.12"
+  }
 }
