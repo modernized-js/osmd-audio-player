@@ -1,47 +1,48 @@
-import React, { Component } from 'react';
+import { useEffect, useRef, useState } from "react";
 import { OpenSheetMusicDisplay } from "opensheetmusicdisplay";
-import AudioPlayer from "osmd-audio-player";
+import PlaybackEngine from "@modernized-js/osmd-audio-player";
 
-class Score extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      file: props.file
+function Score({ file }) {
+  const containerRef = useRef(null);
+  const engineRef = useRef(null);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    const engine = new PlaybackEngine();
+    engineRef.current = engine;
+
+    const init = async () => {
+      const osmd = new OpenSheetMusicDisplay(containerRef.current);
+      await osmd.load(file);
+      if (cancelled) return;
+      await osmd.render();
+      await engine.loadScore(osmd);
+      if (!cancelled) setReady(true);
     };
-    window.audioPlayer = new AudioPlayer();
-    this.divRef = React.createRef();
-  }
 
-  play() { 
-    window.audioPlayer.play(); 
-  }
+    init();
 
-  pause() { 
-    window.audioPlayer.pause(); 
-  }
-  
-  stop() { 
-    window.audioPlayer.stop(); 
-  }
+    return () => {
+      cancelled = true;
+      if (engine.state === "PLAYING") engine.stop();
+    };
+  }, [file]);
 
-  async componentDidMount() {
-    this.osmd = new OpenSheetMusicDisplay(this.divRef.current);
-    await this.osmd.load(this.state.file);
-    await this.osmd.render();
-    await window.audioPlayer.loadScore(this.osmd);
-  }
+  const play = () => engineRef.current?.play();
+  const pause = () => engineRef.current?.pause();
+  const stop = () => engineRef.current?.stop();
 
-  render() {
-    return (<div>
-      <div class="controls">
-        <button onClick={this.play}>Play</button>
-        <button onClick={this.pause}>Pause</button>
-        <button onClick={this.stop}>Stop</button>
+  return (
+    <div>
+      <div className="controls">
+        <button onClick={play} disabled={!ready}>Play</button>
+        <button onClick={pause} disabled={!ready}>Pause</button>
+        <button onClick={stop} disabled={!ready}>Stop</button>
       </div>
-      <div ref={this.divRef} />
+      <div ref={containerRef} />
     </div>
-    );
-  }
+  );
 }
 
 export default Score;
