@@ -1,5 +1,5 @@
 {
-  "name": "@modernized-js/osmd-audio-player",
+  "name": "@modernized/osmd-audio-player",
   "version": "1.0.1",
   "description": "OSMD audio player (fork of osmd-audio-player with modernized build system)",
   "type": "module",
