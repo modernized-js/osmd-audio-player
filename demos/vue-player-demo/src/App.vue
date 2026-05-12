@@ -1,100 +1,97 @@
 <template>
-  <v-app id="app">
-    <v-navigation-drawer v-model="drawer" app>
-      <v-list>
-        <v-list-tile>
-          <v-list-tile-title class="title">
-            Playback settings
-          </v-list-tile-title>
-        </v-list-tile>
-        <PlaybackSidebar :playbackEngine="pbEngine" v-if="pbEngineReady" />
-      </v-list>
-    </v-navigation-drawer>
-    <v-toolbar app>
-      <v-toolbar-side-icon @click="drawer = !drawer"></v-toolbar-side-icon>
-    </v-toolbar>
-    <v-content>
-      <v-container fluid>
-        <v-select :items="scores" label="Select Score" @change="scoreChanged" />
+  <div class="flex h-screen flex-col bg-slate-50">
+    <header class="flex items-center gap-3 border-b border-slate-200 bg-white px-4 py-3 shadow-sm">
+      <button
+        type="button"
+        class="rounded-md p-2 text-slate-600 hover:bg-slate-100"
+        :aria-label="drawer ? 'Hide sidebar' : 'Show sidebar'"
+        @click="drawer = !drawer"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+      </button>
+      <h1 class="text-lg font-semibold text-slate-700">OSMD Audio Player — Vue Demo</h1>
+    </header>
+
+    <div class="flex min-h-0 flex-1">
+      <aside
+        v-if="drawer"
+        class="w-80 shrink-0 overflow-y-auto border-r border-slate-200 bg-white"
+      >
+        <div class="border-b border-slate-200 px-4 py-3">
+          <h2 class="text-base font-semibold text-slate-700">Playback settings</h2>
+        </div>
+        <PlaybackSidebar v-if="pbEngineReady" :playback-engine="pbEngine" />
+        <div v-else class="px-4 py-6 text-sm text-slate-500">Loading...</div>
+      </aside>
+
+      <main class="min-w-0 flex-1 overflow-y-auto p-4">
+        <label class="mb-4 block">
+          <span class="mb-1 block text-sm font-medium text-slate-600">Select Score</span>
+          <select
+            v-model="selectedScore"
+            class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+            @change="scoreChanged"
+          >
+            <option :value="null" disabled>-- choose --</option>
+            <option v-for="s in scores" :key="s.value" :value="s.value">{{ s.text }}</option>
+          </select>
+        </label>
+
         <Score
           v-if="mounted"
-          @osmdInit="osmdInit"
-          @scoreLoaded="scoreLoaded"
           :score="selectedScore"
           :ready="pbEngineReady"
+          @osmd-init="osmdInit"
+          @score-loaded="scoreLoaded"
         />
-      </v-container>
-      <PlaybackControls :playbackEngine="pbEngine" :scoreTitle="scoreTitle" />
-    </v-content>
-  </v-app>
+      </main>
+    </div>
+
+    <PlaybackControls :playback-engine="pbEngine" :score-title="scoreTitle" />
+  </div>
 </template>
 
-<script>
-import PlaybackSidebar from "./components/PlaybackSidebar";
+<script setup>
+import { ref, shallowRef, onMounted } from "vue";
+import PlaybackEngine from "@modernized-js/osmd-audio-player";
+
+import PlaybackSidebar from "./components/PlaybackSidebar.vue";
 import PlaybackControls from "./components/PlaybackControls.vue";
-import Score from "./components/Score";
+import Score from "./components/Score.vue";
 
 import scores from "./scores";
 
-import PlaybackEngine from "../../../dist/PlaybackEngine";
+const pbEngine = shallowRef(new PlaybackEngine());
+const pbEngineReady = ref(false);
+const selectedScore = ref(null);
+const osmd = shallowRef(null);
+const scoreTitle = ref("");
+const drawer = ref(true);
+const mounted = ref(false);
 
-export default {
-  name: "app",
-  components: {
-    osmd: null,
-    Score,
-    PlaybackSidebar,
-    PlaybackControls
-  },
-  data() {
-    return {
-      pbEngine: new PlaybackEngine(),
-      pbEngineReady: false,
-      scores: scores,
-      selectedScore: null,
-      osmd: null,
-      scoreTitle: "",
-      drawer: true,
-      mounted: false
-    };
-  },
-  computed: {},
-  methods: {
-    osmdInit(osmd) {
-      console.log("OSMD init");
-      this.osmd = osmd;
-      this.selectedScore =
-        "https://opensheetmusicdisplay.github.io/demo/sheets/MuzioClementi_SonatinaOpus36No3_Part1.xml";
-    },
-    async scoreLoaded() {
-      console.log("Score loaded");
-      if (this.osmd.sheet.title) this.scoreTitle = this.osmd.sheet.title.text;
-      await this.pbEngine.loadScore(this.osmd);
-      console.log("pbEngine ready");
-      this.pbEngineReady = true;
-    },
-    scoreChanged(scoreUrl) {
-      if (this.pbEngine.state === "PLAYING") this.pbEngine.stop();
-      this.selectedScore = scoreUrl;
-      this.pbEngineReady = false;
-    }
-  },
-  mounted() {
-    setTimeout(() => {
-      // This extra delay before rendering the score component seems to help occasional issues where the 
-      // OSMD cursor img element gets detached from the DOM and doesn't show unless 
-      // you refresh the page. A less pretty workaround until root cause is determined
-      this.mounted = true;
-    }, 200)
-  }
+const osmdInit = (instance) => {
+  osmd.value = instance;
+  selectedScore.value = scores[2].value;
 };
-</script>
 
-<style lang="scss">
-#app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-}
-</style>
+const scoreLoaded = async () => {
+  if (osmd.value?.sheet?.title) scoreTitle.value = osmd.value.sheet.title.text;
+  await pbEngine.value.loadScore(osmd.value);
+  pbEngineReady.value = true;
+};
+
+const scoreChanged = () => {
+  if (pbEngine.value.state === "PLAYING") pbEngine.value.stop();
+  pbEngineReady.value = false;
+};
+
+onMounted(() => {
+  setTimeout(() => {
+    mounted.value = true;
+  }, 200);
+});
+</script>
