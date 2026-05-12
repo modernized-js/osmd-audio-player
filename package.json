@@ -1,6 +1,6 @@
 {
-  "name": "@isamu/osmd-audio-player",
-  "version": "1.0.0",
+  "name": "@modernized-js/osmd-audio-player",
+  "version": "1.0.1",
   "description": "OSMD audio player (fork of osmd-audio-player with modernized build system)",
   "type": "module",
   "main": "dist/index.js",
@@ -26,7 +26,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/isamu/osmd-audio-player"
+    "url": "https://github.com/modernized-js/osmd-audio-player"
   },
   "publishConfig": {
     "access": "public"

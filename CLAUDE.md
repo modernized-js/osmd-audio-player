@@ -5,7 +5,7 @@ OpenSheetMusicDisplay (OSMD) 用の非公式オーディオ再生エンジン。
 - **作者:** Jimmy Utterström
 - **ライセンス:** MIT
 - **バージョン:** 0.7.0（開発終了・メンテナンスモード）
-- **リポジトリ:** https://github.com/jimutt/osmd-audio-player
+- **リポジトリ:** https://github.com/modernized-js/osmd-audio-player（[jimutt/osmd-audio-player](https://github.com/jimutt/osmd-audio-player) のfork）
 
 ## 主な機能
 

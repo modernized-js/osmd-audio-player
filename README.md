@@ -1,4 +1,4 @@
-# @isamu/osmd-audio-player
+# @modernized-js/osmd-audio-player
 
 > **Fork of [osmd-audio-player](https://github.com/jimutt/osmd-audio-player)** by Jimmy Utterström.
 > Modernized build system, updated dependencies, and stricter TypeScript typing.
@@ -17,14 +17,14 @@ Unofficial audio playback engine for [OpenSheetMusicDisplay](https://github.com/
 ## Install
 
 ```
-yarn add @isamu/osmd-audio-player
+yarn add @modernized-js/osmd-audio-player
 ```
 
 ## Usage
 
 ```typescript
 import { OpenSheetMusicDisplay } from "opensheetmusicdisplay";
-import AudioPlayer from "@isamu/osmd-audio-player";
+import AudioPlayer from "@modernized-js/osmd-audio-player";
 
 const osmd = new OpenSheetMusicDisplay(document.getElementById("score"));
 const audioPlayer = new AudioPlayer();
