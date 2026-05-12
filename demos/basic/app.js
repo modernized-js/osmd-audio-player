@@ -1,7 +1,7 @@
 import { OpenSheetMusicDisplay } from "opensheetmusicdisplay";
-import AudioPlayer from "osmd-audio-player";
+import AudioPlayer from "@modernized-js/osmd-audio-player";
+import { PlaybackEvent } from "@modernized-js/osmd-audio-player/dist/PlaybackEngine.js";
 import axios from "axios";
-import { PlaybackEvent } from "../../dist/PlaybackEngine";
 
 (async () => {
   const osmd = new OpenSheetMusicDisplay(document.getElementById("score"));

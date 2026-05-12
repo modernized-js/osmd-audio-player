@@ -5,8 +5,8 @@ Basic demo with a single score and only play, pause and stop functionality.
 ## Run locally
 
 ```
-npm install
-npm run serve
+yarn install
+yarn serve
 ```
 
 ## Build for production
@@ -14,5 +14,5 @@ npm run serve
 Output can be found in the `/dist` directory.
 
 ```
-npm run build
+yarn build
 ```
