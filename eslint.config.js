@@ -7,6 +7,6 @@ export default tseslint.config(
   ...tseslint.configs.recommended,
   prettier,
   {
-    ignores: ["dist/", "umd/", "demos/", "rollup.umd.config.js"],
+    ignores: ["dist/", "umd/", "demos/", "rollup.umd.config.js", "src/**/*.js", "src/**/*.d.ts"],
   },
 );

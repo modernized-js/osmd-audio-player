@@ -8,7 +8,9 @@
     "moduleResolution": "Node",
     "declaration": true,
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "strict": false,
+    "ignoreDeprecations": "6.0"
   },
   "include": ["src/**/*"]
 }
