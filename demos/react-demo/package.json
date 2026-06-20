@@ -12,8 +12,8 @@
   "dependencies": {
     "@modernized-js/osmd-audio-player": "../../",
     "opensheetmusicdisplay": "^1.9.9",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^5.0.0",
