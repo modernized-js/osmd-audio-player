@@ -11,12 +11,12 @@
   },
   "dependencies": {
     "@modernized-js/osmd-audio-player": "../../",
-    "opensheetmusicdisplay": "^1.9.9",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7"
+    "opensheetmusicdisplay": "^2.2.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^5.0.0",
-    "vite": "^8.0.16"
+    "@vitejs/plugin-react": "^6.1.2",
+    "vite": "^8.3.4"
   }
 }

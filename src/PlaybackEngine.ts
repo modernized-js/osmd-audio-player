@@ -96,7 +96,9 @@ export default class PlaybackEngine {
     const voice = this.sheet.Instruments.flatMap((i) => i.Voices).find(
       (v) => v.VoiceId === voiceId,
     );
-    return this.availableInstruments.find((i) => i.midiId === (voice as VoiceWithMidi).midiInstrumentId);
+    return this.availableInstruments.find(
+      (i) => i.midiId === (voice as VoiceWithMidi).midiInstrumentId,
+    );
   }
 
   public async setInstrument(voice: Voice, midiInstrumentId: number): Promise<void> {
@@ -240,7 +242,8 @@ export default class PlaybackEngine {
       const noteVolume = getNoteVolume(note);
       const noteArticulation = getNoteArticulationStyle(note);
 
-      const midiPlaybackInstrument = (note.ParentVoiceEntry.ParentVoice as VoiceWithMidi).midiInstrumentId;
+      const midiPlaybackInstrument = (note.ParentVoiceEntry.ParentVoice as VoiceWithMidi)
+        .midiInstrumentId;
       const fixedKey = note.ParentVoiceEntry.ParentVoice.Parent.SubInstruments[0].fixedKey || 0;
 
       if (!scheduledNotes.has(midiPlaybackInstrument)) {
